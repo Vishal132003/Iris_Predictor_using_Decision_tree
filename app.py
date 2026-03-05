@@ -3,87 +3,108 @@ import pandas as pd
 import pickle
 from sklearn.datasets import load_iris
 
-st.set_page_config(page_title="Iris Species Prediction App", layout="centered")
+st.set_page_config(page_title="Iris Species Predictor", page_icon="🌸", layout="centered")
 
-# Load trained model
+# Load model
 try:
     with open("iris.pkl", "rb") as f:
         model = pickle.load(f)
-except FileNotFoundError:
-    st.error("iris.pkl model file not found.")
+except:
+    st.error("Model file iris.pkl not found")
     st.stop()
 
-# Load dataset
+# Load dataset info
 iris = load_iris()
-feature_names = iris.feature_names
 target_names = iris.target_names
 
-# Create dataframe for slider ranges
-df = pd.DataFrame(iris.data, columns=feature_names)
+# Title
+st.title("🌸 Iris Species Prediction App")
+st.markdown("Predict the **Iris flower species** using sepal and petal measurements.")
 
-st.title("Iris Species Prediction App")
-st.write("This app predicts the Iris species based on sepal and petal measurements.")
+st.divider()
 
-st.sidebar.header("User Input Features")
+# Input section
+st.subheader("Enter Flower Measurements")
 
-# User input function
-def user_input_features():
-    sepal_length = st.sidebar.slider(
+col1, col2 = st.columns(2)
+
+with col1:
+    sepal_length = st.number_input(
         "Sepal Length (cm)",
-        float(df['sepal length (cm)'].min()),
-        float(df['sepal length (cm)'].max()),
-        float(df['sepal length (cm)'].mean())
+        min_value=0.0,
+        max_value=20.0,
+        value=5.1,
+        step=0.1
     )
 
-    sepal_width = st.sidebar.slider(
-        "Sepal Width (cm)",
-        float(df['sepal width (cm)'].min()),
-        float(df['sepal width (cm)'].max()),
-        float(df['sepal width (cm)'].mean())
-    )
-
-    petal_length = st.sidebar.slider(
+    petal_length = st.number_input(
         "Petal Length (cm)",
-        float(df['petal length (cm)'].min()),
-        float(df['petal length (cm)'].max()),
-        float(df['petal length (cm)'].mean())
+        min_value=0.0,
+        max_value=20.0,
+        value=1.4,
+        step=0.1
     )
 
-    petal_width = st.sidebar.slider(
+with col2:
+    sepal_width = st.number_input(
+        "Sepal Width (cm)",
+        min_value=0.0,
+        max_value=20.0,
+        value=3.5,
+        step=0.1
+    )
+
+    petal_width = st.number_input(
         "Petal Width (cm)",
-        float(df['petal width (cm)'].min()),
-        float(df['petal width (cm)'].max()),
-        float(df['petal width (cm)'].mean())
+        min_value=0.0,
+        max_value=20.0,
+        value=0.2,
+        step=0.1
     )
 
-    data = {
-        "sepal length (cm)": sepal_length,
-        "sepal width (cm)": sepal_width,
-        "petal length (cm)": petal_length,
-        "petal width (cm)": petal_width
-    }
+st.divider()
 
-    features = pd.DataFrame(data, index=[0])
-    return features
+# Prediction button
+if st.button("Predict Species 🌼"):
 
+    input_data = pd.DataFrame(
+        [[sepal_length, sepal_width, petal_length, petal_width]],
+        columns=[
+            "sepal length (cm)",
+            "sepal width (cm)",
+            "petal length (cm)",
+            "petal width (cm)"
+        ]
+    )
 
-input_df = user_input_features()
+    prediction = model.predict(input_data)
+    prediction_proba = model.predict_proba(input_data)
 
-st.subheader("User Input Features")
-st.write(input_df)
+    st.subheader("Prediction Result")
 
-# Prediction
-prediction = model.predict(input_df)
-prediction_proba = model.predict_proba(input_df)
+    predicted_class = int(prediction[0])
+    species = target_names[predicted_class]
 
-st.subheader("Prediction")
+    st.success(f"Predicted Species: **{species.upper()}**")
 
-predicted_class = int(prediction[0])
+    st.subheader("Prediction Probability")
 
-if predicted_class < len(target_names):
-    st.success(target_names[predicted_class])
-else:
-    st.error("Prediction index out of range")
+    prob_df = pd.DataFrame(
+        prediction_proba,
+        columns=target_names
+    )
 
-st.subheader("Prediction Probability")
-st.write(pd.DataFrame(prediction_proba, columns=target_names))
+    st.bar_chart(prob_df.T)
+
+st.divider()
+
+st.markdown(
+"""
+### About
+This app uses a **Decision Tree model** trained on the Iris dataset to classify flowers into:
+
+- Setosa
+- Versicolor
+- Virginica
+"""
+)
