@@ -5,12 +5,12 @@ from sklearn.datasets import load_iris
 
 st.set_page_config(page_title="Iris Species Prediction App", layout="centered")
 
-# Load model
+# Load trained model
 try:
-    with open('iris.pkl', 'rb') as f:
+    with open("iris.pkl", "rb") as f:
         model = pickle.load(f)
 except FileNotFoundError:
-    st.error("Error: iris.pkl file not found.")
+    st.error("iris.pkl model file not found.")
     st.stop()
 
 # Load dataset
@@ -18,15 +18,15 @@ iris = load_iris()
 feature_names = iris.feature_names
 target_names = iris.target_names
 
-# Create dataframe for min/max values
+# Create dataframe for slider ranges
 df = pd.DataFrame(iris.data, columns=feature_names)
 
 st.title("Iris Species Prediction App")
 st.write("This app predicts the Iris species based on sepal and petal measurements.")
 
-st.sidebar.header("Input Features")
+st.sidebar.header("User Input Features")
 
-# User input
+# User input function
 def user_input_features():
     sepal_length = st.sidebar.slider(
         "Sepal Length (cm)",
@@ -57,14 +57,15 @@ def user_input_features():
     )
 
     data = {
-        'sepal length (cm)': sepal_length,
-        'sepal width (cm)': sepal_width,
-        'petal length (cm)': petal_length,
-        'petal width (cm)': petal_width
+        "sepal length (cm)": sepal_length,
+        "sepal width (cm)": sepal_width,
+        "petal length (cm)": petal_length,
+        "petal width (cm)": petal_width
     }
 
     features = pd.DataFrame(data, index=[0])
     return features
+
 
 input_df = user_input_features()
 
@@ -76,7 +77,13 @@ prediction = model.predict(input_df)
 prediction_proba = model.predict_proba(input_df)
 
 st.subheader("Prediction")
-st.write(target_names[prediction[0]])
+
+predicted_class = int(prediction[0])
+
+if predicted_class < len(target_names):
+    st.success(target_names[predicted_class])
+else:
+    st.error("Prediction index out of range")
 
 st.subheader("Prediction Probability")
 st.write(pd.DataFrame(prediction_proba, columns=target_names))
