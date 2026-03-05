@@ -1,29 +1,55 @@
-ris Species Classifier
-Project Description
-This project implements a Decision Tree Classifier to predict the species of Iris flowers based on their sepal and petal measurements. The project includes data loading, exploratory data analysis (EDA), model training, evaluation, and visualization of the decision tree and feature importances. Additionally, a Streamlit application is provided to deploy the trained model for interactive predictions.
+# Iris Species Classifier
 
-Table of Contents
-Project Structure
-Setup Instructions
-Running the Streamlit App
-Requirements
-Project Structure
-iris_classification_notebook.ipynb: Jupyter/Colab notebook containing the entire workflow from data loading to model saving.
-iris.pkl: The trained Decision Tree Classifier model, saved using pickle.
-app.py: Streamlit application code for deploying the model.
-requirements.txt: List of Python dependencies.
-Setup Instructions
-To set up and run this project locally, follow these steps:
+## Project Overview
+The **Iris Species Classifier** is a Machine Learning project that predicts the species of an Iris flower using its sepal and petal measurements. The model is built using a **Decision Tree Classifier**. The project demonstrates the complete Machine Learning workflow including data loading, exploratory data analysis (EDA), model training, evaluation, and deployment using a **Streamlit web application** for interactive predictions.
 
-Clone the repository (if applicable) or download the files:
+## Dataset
+The project uses the **Iris dataset**, which contains measurements of iris flowers from three species.
 
+**Features**
+- Sepal Length
+- Sepal Width
+- Petal Length
+- Petal Width
+
+**Target**
+- Species of Iris Flower  
+  - Setosa  
+  - Versicolor  
+  - Virginica  
+
+## Project Structure
+
+Iris-Species-Classifier/
+│
+├── iris_classification_notebook.ipynb
+├── iris.pkl
+├── app.py
+├── requirements.txt
+└── README.md
+
+
+## Technologies Used
+- Python
+- Pandas
+- NumPy
+- Matplotlib
+- Seaborn
+- Scikit-learn
+- Streamlit
+
+## Model Used
+Decision Tree Classifier
+
+## Model Evaluation
+The model performance is evaluated using:
+- Accuracy Score
+- Confusion Matrix
+- Classification Report
+
+## Setup Instructions
+
+### 1. Clone the Repository
+```bash
 git clone <repository_url>
 cd <project_directory>
-Create a virtual environment (recommended):
-
-python -m venv venv
-source venv/bin/activate  # On Windows: .\venv\Scripts\activate
-Install the required dependencies:
-
-pip install -r requirements.txt
-Ensure the model file exists: Run the iris_classification_notebook.ipynb notebook completely to generate the iris.pkl model file.
